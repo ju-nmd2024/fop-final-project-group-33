@@ -1,7 +1,7 @@
-// Array to store all bricks
+// Array for bricks
 let bricks = [];
 
-// Number of rows and columns for the brick grid
+// Number of rows and columns for the bricks
 let rows = 3;
 let columns = 6;
 
@@ -38,6 +38,10 @@ class Brick {
 function setup() {
   createCanvas(800, 600);
 
+  width = 800;
+  height = 600;
+
+
   brickWidth =
     (width - spaceFromLeftWall * 2 - spaceBetweenBricks * (columns - 1)) /
     columns;
@@ -57,7 +61,7 @@ function setup() {
   // Create paddle
   paddle = {
     x: width / 2 - paddleWidth / 2,   //Ensures the paddle starts centered horizontally in canvas
-    y: height - 200,
+    y: height - 100,
     width: paddleWidth,
     height: paddleHeight,
     speed: 5            //Controls how fast the paddle moves
@@ -67,9 +71,9 @@ function setup() {
   // Creat ball
   ball = {
     x: width / 2,     //Horizontal position. (in the center)
-    y: height / 2,    //Vertical position. (in the center)
-    dx: 3,            //Left and right movement speed. Positive mean to the right
-    dy: -3,           //Up and down movement speed. Negative means upward
+    y: height / 1.5,    //Vertical position. (in the center)
+    dx: 5,            //Left and right movement speed. Positive mean to the right
+    dy: -5,           //Up and down movement speed. Negative means upward
     size: ballSize
   };
   
@@ -102,11 +106,31 @@ function draw() {
 
   //Draw paddle
   fill (255, 255, 255);
-  rect(paddle.x, paddle.y, paddle.width, paddle.height);
+  rect(paddle.x, paddle.y, paddle.width, paddle.height, paddle.height / 2);
 
   //Movement of the ball
   ball.x += ball.dx;
   ball.y += ball.dy;
+
+  // When ball hits side walls
+
+  if (ball.x - ball.size / 2 <= 0 || ball.x + ball.size / 2 >= width) {
+    ball.dx = ball.dx * -1; // Reverse horizontal direction
+  }
+
+  // when ball hits the top wall
+  if (ball.y - ball.size / 2 <= 0) {
+    ball.dy = ball.dy * -1; // Reverse vertical direction
+  }
+
+  // when ball hits paddle
+  if (
+    ball.y + ball.size / 2 >= paddle.y &&           
+    ball.x >= paddle.x &&                           
+    ball.x <= paddle.x + paddle.width               
+  ) {
+    ball.dy = ball.dy * -1; 
+  }
   
   //Draw ball
   fill(255, 0, 0);
