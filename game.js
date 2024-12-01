@@ -27,6 +27,7 @@ class Brick {
 
     this.width = brickWidth;
     this.height = brickHeight;
+    this.visible = true;    //All bricks are visible
   }
 
   draw() {
@@ -61,7 +62,7 @@ function setup() {
   // Create paddle
   paddle = {
     x: width / 2 - paddleWidth / 2,   //Ensures the paddle starts centered horizontally in canvas
-    y: height - 100,
+    y: height - 50,
     width: paddleWidth,
     height: paddleHeight,
     speed: 5            //Controls how fast the paddle moves
@@ -137,6 +138,14 @@ function draw() {
   ellipse(ball.x, ball.y, ball.size);
 
   for (let brick of bricks) {
-    brick.draw();
+    if (brick.visible) {
+      brick.draw();
+
+      if (ball.x >= brick.x && ball.x <= brick.x + brick.width &&
+        ball.y >= brick.y && ball.y <= brick.y + brick.height) {
+          ball.dy *= -1;
+          brick.visible = false;
+        }
+    }
   }
 }
