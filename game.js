@@ -120,7 +120,9 @@ function starfield() {
 
 function mousePressed() {
   // Release the ball when the mouse is clicked
-  ballReleased = true;
+  if (mouseIsPressed) {
+    ballReleased = true;
+  }
 }
 
 function startScreen() {
@@ -315,8 +317,38 @@ function draw() {
 }
 }
 
+function resetGame() {
+  //Reset ball position
+  ball.x = paddle.x + paddle.width / 2;
+  ball.y = paddle.y - ball.size / 2;
+
+  //Reset ball speed to default
+  ball.dx = 5;
+  ball.dy = -5;
+
+  //Reset paddle position
+  paddle.x = width / 2 - paddleWidth / 2;
+
+  //Reset bricks
+  bricks = [];
+  for (let row = 0; row < rows; row++) {
+    for (let column = 0; column < columns; column++) {
+      // Calculate the x and y position for the current brick
+      let x = spaceFromLeftWall + column * (brickWidth + spaceBetweenBricks);
+      let y = spaceFromTopWall + row * (brickHeight + spaceBetweenBricks);
+
+      // Create a new Brick object at the calculated position
+      bricks.push(new Brick(x, y));
+    }
+  }
+}
+
 // Mouse click to start the game
 function mousePressed() {
+
+  if (gameState === "playing" && !ballReleased) {
+    ballReleased = true;
+  }
   if (gameState === "start") {
     // Easy button
     if (mouseX > 75 && mouseX < 245 && mouseY > 400 && mouseY < 450) {
