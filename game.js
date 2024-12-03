@@ -1,3 +1,4 @@
+
 // Array for bricks
 let bricks = [];
 
@@ -28,12 +29,32 @@ class Brick {
 
     this.width = brickWidth;
     this.height = brickHeight;
-    this.visible = true; //All bricks are visible
+    this.visible = true; // All bricks are visible
   }
 
   draw() {
     fill(255, 255, 255);
     rect(this.x, this.y, this.width, this.height);
+  }
+}
+
+// Paddle class to represent the paddle
+class Paddle {
+  constructor(x, y, width, height, speed) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.speed = speed;
+  }
+
+  move(direction) {
+    this.x += direction * this.speed;
+  }
+
+  draw() {
+    fill(255, 255, 255);
+    rect(this.x, this.y, this.width, this.height, this.height / 2);
   }
 }
 
@@ -47,7 +68,7 @@ function setup() {
     (width - spaceFromLeftWall * 2 - spaceBetweenBricks * (columns - 1)) /
     columns;
 
-  // grid of bricks
+  // Grid of bricks
   for (let row = 0; row < rows; row++) {
     for (let column = 0; column < columns; column++) {
       // Calculate the x and y position for the current brick
@@ -60,25 +81,25 @@ function setup() {
   }
 
   // Create paddle
-  paddle = {
-    x: width / 2 - paddleWidth / 2, //Ensures the paddle starts centered horizontally in canvas
-    y: height - 70,
-    width: paddleWidth,
-    height: paddleHeight,
-    speed: 8, //Controls how fast the paddle moves
-  };
+  paddle = new Paddle(
+    width / 2 - paddleWidth / 2, // Ensures the paddle starts centered horizontally in canvas
+    height - 70,
+    paddleWidth,
+    paddleHeight,
+    8 // Controls how fast the paddle moves
+  );
 
-  // Creat ball
+  // Create ball
   ball = {
-    x: paddle.x + paddle.width / 2, // center of paddle
-    y: paddle.y - ballSize / 2, // top of paddle
-    dx: 5, //Left and right movement speed. Positive mean to the right
-    dy: -5, //Up and down movement speed. Negative means upward
+    x: paddle.x + paddle.width / 2, // Center of paddle
+    y: paddle.y - ballSize / 2, // Top of paddle
+    dx: 5, // Left and right movement speed. Positive means to the right
+    dy: -5, // Up and down movement speed. Negative means upward
     size: ballSize,
   };
 }
 
-//Drawing the starfield
+// Drawing the starfield
 function starfield() {
   push();
   let x1 = random(width);
@@ -98,17 +119,17 @@ function mousePressed() {
 
 function startScreen() {
   push();
-  stroke(155, 255, 255); //buttons and game name
+  stroke(155, 255, 255); // Buttons and game name
   strokeWeight(25);
   fill(255, 255, 255);
 
   textSize(100); // Game name
   text("BREAKOUT", x - 270, y - 10);
 
-  strokeWeight(5); // level Button shape
+  strokeWeight(5); // Level Button shape
   rect(x - 85, y + 100, 160, 50, 20);
 
-  noStroke(); // level text
+  noStroke(); // Level text
   fill(0, 30, 65);
   textSize(30);
   text("LEVELS", x - 60, y + 135);
@@ -129,10 +150,10 @@ function startScreen() {
 
   push();
 
-  strokeWeight(5); // medium Button shape
+  strokeWeight(5); // Medium Button shape
   rect(x - 85, y + 200, 170, 50, 20);
 
-  noStroke(); // medium Button text
+  noStroke(); // Medium Button text
   fill(0, 30, 65);
   textSize(30);
   text("MEDIUM", x - 60, y + 235);
@@ -141,10 +162,10 @@ function startScreen() {
 
   push();
 
-  strokeWeight(5); // hard Button shape
+  strokeWeight(5); // Hard Button shape
   rect(x + 105, y + 200, 170, 50, 20);
 
-  noStroke(); // hard Button text
+  noStroke(); // Hard Button text
   fill(0, 30, 65);
   textSize(30);
   text("HARD", x + 150, y + 235);
@@ -155,7 +176,7 @@ function startScreen() {
 // Winning result screen
 function resultScreenWin() {
   push();
-  stroke(155, 255, 255); //buttons and game name
+  stroke(155, 255, 255); // Buttons and game name
   strokeWeight(15);
   fill(255, 255, 255);
 
@@ -179,7 +200,7 @@ function resultScreenWin() {
 // Losing result screen
 function resultScreenLose() {
   push();
-  stroke(155, 255, 255); //buttons and game name
+  stroke(155, 255, 255); // Buttons and game name
   strokeWeight(15);
   fill(255, 255, 255);
 
@@ -213,17 +234,16 @@ function draw() {
   drawGradientBackground();
   starfield();
 
-  //Move paddle
+  // Move paddle
   if (keyIsDown(LEFT_ARROW) && paddle.x > 0) {
-    paddle.x -= paddle.speed;
+    paddle.move(-1);
   }
   if (keyIsDown(RIGHT_ARROW) && paddle.x < width - paddle.width) {
-    paddle.x += paddle.speed;
+    paddle.move(1);
   }
 
-  //Draw paddle
-  fill(255, 255, 255);
-  rect(paddle.x, paddle.y, paddle.width, paddle.height, paddle.height / 2);
+  // Draw paddle
+  paddle.draw();
 
   if (!ballReleased) {
     // Keep ball attached to the paddle if not released
@@ -235,17 +255,16 @@ function draw() {
     ball.y += ball.dy;
 
     // When ball hits side walls
-
     if (ball.x - ball.size / 2 <= 0 || ball.x + ball.size / 2 >= width) {
       ball.dx = ball.dx * -1; // Reverse horizontal direction
     }
 
-    // when ball hits the top wall
+    // When ball hits the top wall
     if (ball.y - ball.size / 2 <= 0) {
       ball.dy = ball.dy * -1; // Reverse vertical direction
     }
 
-    // when ball hits paddle
+    // When ball hits paddle
     if (
       ball.y + ball.size / 2 >= paddle.y &&
       ball.x >= paddle.x &&
@@ -255,7 +274,7 @@ function draw() {
     }
   }
 
-  //Draw ball
+  // Draw ball
   fill(105, 250, 250);
   ellipse(ball.x, ball.y, ball.size);
 
