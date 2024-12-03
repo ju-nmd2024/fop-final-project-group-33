@@ -9,7 +9,8 @@ let columns = 6;
 let brickWidth;
 let brickHeight = 30;
 let spaceBetweenBricks = 10;
-let spaceFromWall = 50;
+let spaceFromTopWall = 10;
+let spaceFromLeftWall = 10;
 
 // Variables for paddle and ball
 let paddle;
@@ -17,6 +18,7 @@ let paddleWidth = 100;
 let paddleHeight = 20;
 let ball;
 let ballSize = 15;
+let ballReleased = false;
 
 // Brick class to represent each brick
 class Brick {
@@ -26,11 +28,11 @@ class Brick {
 
     this.width = brickWidth;
     this.height = brickHeight;
-    this.visible = true;    //All bricks are visible
+    this.visible = true; //All bricks are visible
   }
 
   draw() {
-    fill(100, 100, 100);
+    fill(255, 255, 255);
     rect(this.x, this.y, this.width, this.height);
   }
 }
@@ -38,25 +40,19 @@ class Brick {
 function setup() {
   createCanvas(800, 600);
 
-<<<<<<< Updated upstream
   width = 800;
   height = 600;
 
-=======
-  console.log(width);
-  console.log(height);
->>>>>>> Stashed changes
-
   brickWidth =
-    (width - spaceFromWall * 2 - spaceBetweenBricks * (columns - 1)) /
+    (width - spaceFromLeftWall * 2 - spaceBetweenBricks * (columns - 1)) /
     columns;
 
   // grid of bricks
   for (let row = 0; row < rows; row++) {
     for (let column = 0; column < columns; column++) {
       // Calculate the x and y position for the current brick
-      let x = spaceFromWall + column * (brickWidth + spaceBetweenBricks);
-      let y = spaceFromWall + row * (brickHeight + spaceBetweenBricks);
+      let x = spaceFromLeftWall + column * (brickWidth + spaceBetweenBricks);
+      let y = spaceFromTopWall + row * (brickHeight + spaceBetweenBricks);
 
       // Create a new Brick object at the calculated position
       bricks.push(new Brick(x, y));
@@ -65,38 +61,25 @@ function setup() {
 
   // Create paddle
   paddle = {
-    x: width / 2 - paddleWidth / 2,   //Ensures the paddle starts centered horizontally in canvas
-<<<<<<< Updated upstream
-    y: height - 50,
-=======
-    y: height - 100,                  //Position of the paddle vertically
->>>>>>> Stashed changes
+    x: width / 2 - paddleWidth / 2, //Ensures the paddle starts centered horizontally in canvas
+    y: height - 70,
     width: paddleWidth,
     height: paddleHeight,
-    speed: 10                          //Controls how fast the paddle moves
-  }; 
-      
+    speed: 8, //Controls how fast the paddle moves
+  };
 
   // Creat ball
   ball = {
-<<<<<<< Updated upstream
-    x: width / 2,     //Horizontal position. (in the center)
-    y: height / 1.5,    //Vertical position. (in the center)
-    dx: 5,            //Left and right movement speed. Positive mean to the right
-    dy: -5,           //Up and down movement speed. Negative means upward
-=======
-    x: width - 200,     //Horizontal position. (in the center)
-    y: height / 2,    //Vertical position. (in the center)
-    dx: 3,            //Left and right movement speed. Positive mean to the right
-    dy: -3,           //Up and down movement speed. Negative means upward
->>>>>>> Stashed changes
-    size: ballSize
+    x: paddle.x + paddle.width / 2, // center of paddle
+    y: paddle.y - ballSize / 2, // top of paddle
+    dx: 5, //Left and right movement speed. Positive mean to the right
+    dy: -5, //Up and down movement speed. Negative means upward
+    size: ballSize,
   };
-  
 }
 
 //Drawing the starfield
-function starfield(){
+function starfield() {
   push();
   let x1 = random(width);
   let y1 = random(height);
@@ -108,71 +91,187 @@ function starfield(){
   pop();
 }
 
+function mousePressed() {
+  // Release the ball when the mouse is clicked
+  ballReleased = true;
+}
+
+function startScreen() {
+  push();
+  stroke(155, 255, 255); //buttons and game name
+  strokeWeight(25);
+  fill(255, 255, 255);
+
+  textSize(100); // Game name
+  text("BREAKOUT", x - 270, y - 10);
+
+  strokeWeight(5); // level Button shape
+  rect(x - 85, y + 100, 160, 50, 20);
+
+  noStroke(); // level text
+  fill(0, 30, 65);
+  textSize(30);
+  text("LEVELS", x - 60, y + 135);
+
+  pop();
+
+  push();
+
+  strokeWeight(5); // EASY Button shape
+  rect(x - 275, y + 200, 170, 50, 20);
+
+  noStroke(); // EASY Button text
+  fill(0, 30, 65);
+  textSize(30);
+  text("EASY", x - 230, y + 235);
+
+  pop();
+
+  push();
+
+  strokeWeight(5); // medium Button shape
+  rect(x - 85, y + 200, 170, 50, 20);
+
+  noStroke(); // medium Button text
+  fill(0, 30, 65);
+  textSize(30);
+  text("MEDIUM", x - 60, y + 235);
+
+  pop();
+
+  push();
+
+  strokeWeight(5); // hard Button shape
+  rect(x + 105, y + 200, 170, 50, 20);
+
+  noStroke(); // hard Button text
+  fill(0, 30, 65);
+  textSize(30);
+  text("HARD", x + 150, y + 235);
+
+  pop();
+}
+
+// Winning result screen
+function resultScreenWin() {
+  push();
+  stroke(155, 255, 255); //buttons and game name
+  strokeWeight(15);
+  fill(255, 255, 255);
+
+  textSize(90); // Game name
+  text("GOOD JOB !", x - 250, y - 10);
+
+  strokeWeight(5);
+  textSize(60);
+  text("FOR NEXT LEVEL", x - 240, y + 150);
+
+  strokeWeight(5); // Button shape
+  rect(x - 115, y + 200, 230, 50, 20);
+
+  noStroke(); // Buttons texts
+  fill(0, 30, 65);
+  textSize(30);
+  text("CLICK HERE", x - 85, y + 235);
+  pop();
+}
+
+// Losing result screen
+function resultScreenLose() {
+  push();
+  stroke(155, 255, 255); //buttons and game name
+  strokeWeight(15);
+  fill(255, 255, 255);
+
+  textSize(80); // Game name
+  text("GAME OVER", x - 250, y - 10);
+
+  strokeWeight(5);
+  textSize(60);
+  text("DO YOU WANT TO", x - 260, y + 150);
+
+  strokeWeight(5); // Button shape
+  rect(x - 115, y + 200, 230, 50, 20);
+
+  noStroke(); // Buttons texts
+  fill(0, 30, 65);
+  textSize(30);
+  text("PLAY AGAIN", x - 85, y + 235);
+  pop();
+}
+
+function drawGradientBackground() {
+  for (let y = 0; y < height; y++) {
+    let inter = map(y, 0, height, 0, 1);
+    let c = lerpColor(color("#001F3F"), color("#0077BE"), inter);
+    stroke(c);
+    line(0, y, width, y);
+  }
+}
+
 function draw() {
-  background(0, 0, 0);
+  drawGradientBackground();
   starfield();
 
-
-  console.log(width);
-  console.log(height);
-
   //Move paddle
-  if (keyIsDown(LEFT_ARROW) && paddle.x > spaceFromWall) {
+  if (keyIsDown(LEFT_ARROW) && paddle.x > 0) {
     paddle.x -= paddle.speed;
   }
-  if (keyIsDown(RIGHT_ARROW) && paddle.x < width - paddle.width - spaceFromWall) {
+  if (keyIsDown(RIGHT_ARROW) && paddle.x < width - paddle.width) {
     paddle.x += paddle.speed;
   }
 
   //Draw paddle
-  fill (255, 255, 255);
+  fill(255, 255, 255);
   rect(paddle.x, paddle.y, paddle.width, paddle.height, paddle.height / 2);
 
-  //Movement of the ball
-  ball.x += ball.dx;
-  ball.y += ball.dy;
+  if (!ballReleased) {
+    // Keep ball attached to the paddle if not released
+    ball.x = paddle.x + paddle.width / 2;
+    ball.y = paddle.y - ball.size / 2;
+  } else {
+    // Movement of the ball
+    ball.x += ball.dx;
+    ball.y += ball.dy;
 
-<<<<<<< Updated upstream
-  // When ball hits side walls
+    // When ball hits side walls
 
-  if (ball.x - ball.size / 2 <= 0 || ball.x + ball.size / 2 >= width) {
-    ball.dx = ball.dx * -1; // Reverse horizontal direction
+    if (ball.x - ball.size / 2 <= 0 || ball.x + ball.size / 2 >= width) {
+      ball.dx = ball.dx * -1; // Reverse horizontal direction
+    }
+
+    // when ball hits the top wall
+    if (ball.y - ball.size / 2 <= 0) {
+      ball.dy = ball.dy * -1; // Reverse vertical direction
+    }
+
+    // when ball hits paddle
+    if (
+      ball.y + ball.size / 2 >= paddle.y &&
+      ball.x >= paddle.x &&
+      ball.x <= paddle.x + paddle.width
+    ) {
+      ball.dy = ball.dy * -1;
+    }
   }
 
-  // when ball hits the top wall
-  if (ball.y - ball.size / 2 <= 0) {
-    ball.dy = ball.dy * -1; // Reverse vertical direction
-  }
-
-  // when ball hits paddle
-  if (
-    ball.y + ball.size / 2 >= paddle.y &&           
-    ball.x >= paddle.x &&                           
-    ball.x <= paddle.x + paddle.width               
-  ) {
-    ball.dy = ball.dy * -1; 
-  }
-=======
-  if(ball.x == spaceFromWall || ball.x == (width - spaceFromWall)) {
-    ball.x = - ball.x;
-    ball.y = ball.y;
-  }
-
->>>>>>> Stashed changes
-  
   //Draw ball
-  fill(255, 0, 0);
+  fill(105, 250, 250);
   ellipse(ball.x, ball.y, ball.size);
 
   for (let brick of bricks) {
     if (brick.visible) {
       brick.draw();
 
-      if (ball.x >= brick.x && ball.x <= brick.x + brick.width &&
-        ball.y >= brick.y && ball.y <= brick.y + brick.height) {
-          ball.dy *= -1;
-          brick.visible = false;
-        }
+      if (
+        ball.x >= brick.x &&
+        ball.x <= brick.x + brick.width &&
+        ball.y >= brick.y &&
+        ball.y <= brick.y + brick.height
+      ) {
+        ball.dy *= -1;
+        brick.visible = false;
+      }
     }
   }
 }
