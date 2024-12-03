@@ -1,6 +1,11 @@
 
+let x = 350;
+let y = 200;
+
 // Array for bricks
 let bricks = [];
+
+let gameState = "start";
 
 // Number of rows and columns for the bricks
 let rows = 3;
@@ -13,9 +18,10 @@ let spaceBetweenBricks = 10;
 let spaceFromTopWall = 10;
 let spaceFromLeftWall = 10;
 
+
 // Variables for paddle and ball
 let paddle;
-let paddleWidth = 100;
+let paddleWidth = 120;
 let paddleHeight = 20;
 let ball;
 let ballSize = 15;
@@ -82,11 +88,11 @@ function setup() {
 
   // Create paddle
   paddle = new Paddle(
-    width / 2 - paddleWidth / 2, // Ensures the paddle starts centered horizontally in canvas
+    width / 2 - paddleWidth / 2,
     height - 70,
     paddleWidth,
     paddleHeight,
-    8 // Controls how fast the paddle moves
+    8
   );
 
   // Create ball
@@ -234,6 +240,10 @@ function draw() {
   drawGradientBackground();
   starfield();
 
+  if (gameState === "start") {
+    startScreen();
+  } else if (gameState === "playing") {
+
   // Move paddle
   if (keyIsDown(LEFT_ARROW) && paddle.x > 0) {
     paddle.move(-1);
@@ -274,6 +284,11 @@ function draw() {
     }
   }
 
+  // Losing condition
+  if (ball.y >= height) {
+    gameState = "lost";
+  }
+
   // Draw ball
   fill(105, 250, 250);
   ellipse(ball.x, ball.y, ball.size);
@@ -293,4 +308,41 @@ function draw() {
       }
     }
   }
+} else if (gameState === "lost") {
+  resultScreenLose();
+} else if (gameState === "won") {
+  resultScreenWin();
 }
+}
+
+// Mouse click to start the game
+function mousePressed() {
+  if (gameState === "start") {
+    // Easy button
+    if (mouseX > 75 && mouseX < 245 && mouseY > 400 && mouseY < 450) {
+      gameState = "playing";
+    }
+    // Medium button
+    else if (mouseX > 265 && mouseX < 435 && mouseY > 400 && mouseY < 450) {
+      gameState = "playing";
+      ball.dx = 8; 
+      ball.dy = -8; 
+      paddle.width = 90;
+    }
+    // Hard button
+    else if (mouseX > 455 && mouseX < 625 && mouseY > 400 && mouseY < 450) {
+      gameState = "playing";
+      ball.dx = 11; 
+      ball.dy = -11; 
+      paddle.width = 60;
+    }
+  } else if (gameState === "lost" || gameState === "won") {
+    // Restart button
+    if (mouseX > 235 && mouseX < 465 && mouseY > 400 && mouseY < 450) {
+      gameState = "start";
+      ballReleased = false;
+      resetGame();
+    }
+  }
+}
+
