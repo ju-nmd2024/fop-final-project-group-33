@@ -30,6 +30,7 @@ function preload() {
   brickImage = loadImage("BrickC.png");
   paddleImage = loadImage("paddle.png");
   ballImage = loadImage("ball.png");
+  grinchImage = loadImage("Grinch (2).png");
 }
 
 // Brick class to represent each brick
@@ -215,6 +216,7 @@ function resultScreenLose() {
   strokeWeight(15);
   fill(255, 255, 255);
 
+
   textSize(80); // Game name
   text("GAME OVER", x - 250, y - 10);
 
@@ -229,6 +231,7 @@ function resultScreenLose() {
   fill(0, 30, 65);
   textSize(30);
   text("PLAY AGAIN", x - 85, y + 235);
+  image(grinchImage, x, y);
   pop();
 }
 
