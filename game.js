@@ -329,6 +329,7 @@ function resetGame() {
 
   //Reset paddle position
   paddle.x = width / 2 - paddleWidth / 2;
+  paddle.width = 120;
 
   //Reset bricks
   bricks = [];
