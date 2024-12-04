@@ -31,6 +31,8 @@ function preload() {
   paddleImage = loadImage("paddle.png");
   ballImage = loadImage("ball.png");
   grinchImage = loadImage("Grinch (2).png");
+  santaImage = loadImage("santa.png");
+  santa2Image = loadImage("Happy_santa.png");
 }
 
 // Brick class to represent each brick
@@ -137,20 +139,22 @@ function startScreen() {
 
   textSize(100); // Game name
   text("BREAKOUT", x - 230, y - 10);
+  image(santaImage, 300, 100);
 
   // strokeWeight(5); // Level Button shape
   // rect(x - 40, y + 100, 160, 50, 20);
 
   // noStroke(); // Level text
   // fill(0, 30, 65);
-  textSize(30);
-  text("CHOOSE A LEVELS", x - 60, y + 135);
+  textSize(20);
+  text("CHOOSE A LEVEL", x - 200, y + 135);
 
   pop();
 
   push();
 
-  strokeWeight(5); // EASY Button shape
+  strokeWeight(2); // EASY Button shape
+  fill(255, 255, 255, 55);
   rect(x - 275, y + 200, 170, 50, 20);
 
   noStroke(); // EASY Button text
@@ -163,6 +167,7 @@ function startScreen() {
   push();
 
   strokeWeight(5); // Medium Button shape
+  fill(255, 255, 255, 55);
   rect(x - 85, y + 200, 170, 50, 20);
 
   noStroke(); // Medium Button text
@@ -175,6 +180,7 @@ function startScreen() {
   push();
 
   strokeWeight(5); // Hard Button shape
+  fill(255, 255, 255, 55);
   rect(x + 105, y + 200, 170, 50, 20);
 
   noStroke(); // Hard Button text
@@ -231,7 +237,7 @@ function resultScreenLose() {
   fill(0, 30, 65);
   textSize(30);
   text("PLAY AGAIN", x - 85, y + 235);
-  image(grinchImage, x, y);
+  image(grinchImage, x + 100, y);
   pop();
 }
 
