@@ -29,6 +29,7 @@ let ballReleased = false;
 function preload() {
   brickImage = loadImage("BrickC.png");
   paddleImage = loadImage("paddle.png");
+  ballImage = loadImage("ball.png");
 }
 
 // Brick class to represent each brick
