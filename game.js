@@ -27,7 +27,7 @@ let ballSize = 15;
 let ballReleased = false;
 
 function preload() {
-  brickImage = loadImage("Brick Image.jpg");
+  brickImage = loadImage("BrickC_Image.jpg");
 }
 
 // Brick class to represent each brick
