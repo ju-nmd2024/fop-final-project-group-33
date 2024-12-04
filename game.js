@@ -27,7 +27,8 @@ let ballSize = 15;
 let ballReleased = false;
 
 function preload() {
-  brickImage = loadImage("BrickC_Image.jpg");
+  brickImage = loadImage("BrickC.png");
+  paddleImage = loadImage("paddle.png");
 }
 
 // Brick class to represent each brick
@@ -61,8 +62,7 @@ class Paddle {
   }
 
   draw() {
-    fill(255, 255, 255);
-    rect(this.x, this.y, this.width, this.height, this.height / 2);
+    image(paddleImage, this.x, this.y, this.width, this.height, this.height / 2);
   }
 }
 
