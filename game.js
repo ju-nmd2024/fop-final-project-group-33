@@ -1,4 +1,3 @@
-
 let x = 350;
 let y = 200;
 
@@ -6,6 +5,7 @@ let y = 200;
 let bricks = [];
 
 let gameState = "start";
+let brickImage;
 
 // Number of rows and columns for the bricks
 let rows = 3;
@@ -18,7 +18,6 @@ let spaceBetweenBricks = 10;
 let spaceFromTopWall = 10;
 let spaceFromLeftWall = 10;
 
-
 // Variables for paddle and ball
 let paddle;
 let paddleWidth = 120;
@@ -26,6 +25,10 @@ let paddleHeight = 20;
 let ball;
 let ballSize = 15;
 let ballReleased = false;
+
+function preload() {
+  brickImage = loadImage("Brick Image.jpg");
+}
 
 // Brick class to represent each brick
 class Brick {
@@ -39,8 +42,7 @@ class Brick {
   }
 
   draw() {
-    fill(255, 255, 255);
-    rect(this.x, this.y, this.width, this.height);
+    image(brickImage, this.x, this.y, this.width, this.height);
   }
 }
 
@@ -132,15 +134,15 @@ function startScreen() {
   fill(255, 255, 255);
 
   textSize(100); // Game name
-  text("BREAKOUT", x - 270, y - 10);
+  text("BREAKOUT", x - 230, y - 10);
 
-  strokeWeight(5); // Level Button shape
-  rect(x - 85, y + 100, 160, 50, 20);
+  // strokeWeight(5); // Level Button shape
+  // rect(x - 40, y + 100, 160, 50, 20);
 
-  noStroke(); // Level text
-  fill(0, 30, 65);
+  // noStroke(); // Level text
+  // fill(0, 30, 65);
   textSize(30);
-  text("LEVELS", x - 60, y + 135);
+  text("CHOOSE A LEVELS", x - 60, y + 135);
 
   pop();
 
@@ -245,76 +247,75 @@ function draw() {
   if (gameState === "start") {
     startScreen();
   } else if (gameState === "playing") {
-
-  // Move paddle
-  if (keyIsDown(LEFT_ARROW) && paddle.x > 0) {
-    paddle.move(-1);
-  }
-  if (keyIsDown(RIGHT_ARROW) && paddle.x < width - paddle.width) {
-    paddle.move(1);
-  }
-
-  // Draw paddle
-  paddle.draw();
-
-  if (!ballReleased) {
-    // Keep ball attached to the paddle if not released
-    ball.x = paddle.x + paddle.width / 2;
-    ball.y = paddle.y - ball.size / 2;
-  } else {
-    // Movement of the ball
-    ball.x += ball.dx;
-    ball.y += ball.dy;
-
-    // When ball hits side walls
-    if (ball.x - ball.size / 2 <= 0 || ball.x + ball.size / 2 >= width) {
-      ball.dx = ball.dx * -1; // Reverse horizontal direction
+    // Move paddle
+    if (keyIsDown(LEFT_ARROW) && paddle.x > 0) {
+      paddle.move(-1);
+    }
+    if (keyIsDown(RIGHT_ARROW) && paddle.x < width - paddle.width) {
+      paddle.move(1);
     }
 
-    // When ball hits the top wall
-    if (ball.y - ball.size / 2 <= 0) {
-      ball.dy = ball.dy * -1; // Reverse vertical direction
-    }
+    // Draw paddle
+    paddle.draw();
 
-    // When ball hits paddle
-    if (
-      ball.y + ball.size / 2 >= paddle.y &&
-      ball.x >= paddle.x &&
-      ball.x <= paddle.x + paddle.width
-    ) {
-      ball.dy = ball.dy * -1;
-    }
-  }
+    if (!ballReleased) {
+      // Keep ball attached to the paddle if not released
+      ball.x = paddle.x + paddle.width / 2;
+      ball.y = paddle.y - ball.size / 2;
+    } else {
+      // Movement of the ball
+      ball.x += ball.dx;
+      ball.y += ball.dy;
 
-  // Losing condition
-  if (ball.y >= height) {
-    gameState = "lost";
-  }
+      // When ball hits side walls
+      if (ball.x - ball.size / 2 <= 0 || ball.x + ball.size / 2 >= width) {
+        ball.dx = ball.dx * -1; // Reverse horizontal direction
+      }
 
-  // Draw ball
-  fill(105, 250, 250);
-  ellipse(ball.x, ball.y, ball.size);
+      // When ball hits the top wall
+      if (ball.y - ball.size / 2 <= 0) {
+        ball.dy = ball.dy * -1; // Reverse vertical direction
+      }
 
-  for (let brick of bricks) {
-    if (brick.visible) {
-      brick.draw();
-
+      // When ball hits paddle
       if (
-        ball.x >= brick.x &&
-        ball.x <= brick.x + brick.width &&
-        ball.y >= brick.y &&
-        ball.y <= brick.y + brick.height
+        ball.y + ball.size / 2 >= paddle.y &&
+        ball.x >= paddle.x &&
+        ball.x <= paddle.x + paddle.width
       ) {
-        ball.dy *= -1;
-        brick.visible = false;
+        ball.dy = ball.dy * -1;
       }
     }
+
+    // Losing condition
+    if (ball.y >= height) {
+      gameState = "lost";
+    }
+
+    // Draw ball
+    fill(105, 250, 250);
+    ellipse(ball.x, ball.y, ball.size);
+
+    for (let brick of bricks) {
+      if (brick.visible) {
+        brick.draw();
+
+        if (
+          ball.x >= brick.x &&
+          ball.x <= brick.x + brick.width &&
+          ball.y >= brick.y &&
+          ball.y <= brick.y + brick.height
+        ) {
+          ball.dy *= -1;
+          brick.visible = false;
+        }
+      }
+    }
+  } else if (gameState === "lost") {
+    resultScreenLose();
+  } else if (gameState === "won") {
+    resultScreenWin();
   }
-} else if (gameState === "lost") {
-  resultScreenLose();
-} else if (gameState === "won") {
-  resultScreenWin();
-}
 }
 
 function resetGame() {
@@ -345,7 +346,6 @@ function resetGame() {
 
 // Mouse click to start the game
 function mousePressed() {
-
   if (gameState === "playing" && !ballReleased) {
     ballReleased = true;
   }
@@ -357,15 +357,15 @@ function mousePressed() {
     // Medium button
     else if (mouseX > 265 && mouseX < 435 && mouseY > 400 && mouseY < 450) {
       gameState = "playing";
-      ball.dx = 8; 
-      ball.dy = -8; 
+      ball.dx = 8;
+      ball.dy = -8;
       paddle.width = 90;
     }
     // Hard button
     else if (mouseX > 455 && mouseX < 625 && mouseY > 400 && mouseY < 450) {
       gameState = "playing";
-      ball.dx = 11; 
-      ball.dy = -11; 
+      ball.dx = 11;
+      ball.dy = -11;
       paddle.width = 60;
     }
   } else if (gameState === "lost" || gameState === "won") {
@@ -377,4 +377,3 @@ function mousePressed() {
     }
   }
 }
-
