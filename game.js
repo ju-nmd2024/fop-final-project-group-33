@@ -1,11 +1,19 @@
+// Sources we used for this game
+
+//references
+
+// https://developer.mozilla.org/en-US/docs/Games/Tutorials/2D_Breakout_game_pure_JavaScript
+// https://www.youtube.com/watch?v=-Yd94ZvDA6g
+// https://editor.p5js.org/bansal321/sketches/HJAFXebeV
+// https://www.youtube.com/watch?v=N3phCa6wJBQ
+
 let x = 350;
 let y = 200;
 
 // Array for bricks
 let bricks = [];
 
-let gameState = "lost"; // start, easyWon, easylost, mediumWon, mediumLost, hardWon, hardLost
-let brickImage;
+let gameState = "start"; // start, won, playing, lost
 
 // Number of rows and columns for the bricks
 let rows = 3;
@@ -26,10 +34,11 @@ let ball;
 let ballSize = 15;
 let ballReleased = false;
 
+// for all images we used different AI
+// https://gemini.google.com/share/continue/59c99b9e3320
 function preload() {
   brickImage = loadImage("BrickC.png");
   paddleImage = loadImage("paddle.png");
-  ballImage = loadImage("ball.png");
   grinchImage = loadImage("Grinch (2).png");
   santaImage = loadImage("santa.png");
   santa2Image = loadImage("Happy_santa.png");
@@ -72,13 +81,15 @@ class Paddle {
 
 function setup() {
   createCanvas(800, 600);
+  // https://loop.cloud.microsoft/p/eyJ1IjoiaHR0cHM6Ly9qb25rb3Bpbmd1bml2ZXJzaXR5LnNoYXJlcG9pbnQuY29tL2NvbnRlbnRzdG9yYWdlL3g4Rk5PLXh0c2t1Q1JYMl9mTVRITFlGTXNCdXQwLUZMbmowSnAzaFZTdWM%2FbmF2PWN6MGxNa1pqYjI1MFpXNTBjM1J2Y21GblpTVXlSbmc0Ums1UExYaDBjMnQxUTFKWU1sOW1UVlJJVEZsR1RYTkNkWFF3TFVaTWJtb3dTbkF6YUZaVGRXTW1aRDFpSlRJeFRtZ3pOVVpDYlhkVmF6WjRYelJQYzJObU9USlhjRlZWWjJsTloxZENSa1puZDFCS2VFaENaVlpSWkY5NlJrcG5RWHBqTVZRMWFrMXlOWGN4TFVsUFN5Wm1QVEF4UlZrM1IwdEpXalZJVGxCRlIwZEJTRVphU0ZsTFZscFdSazVYV1VkRE1sVW1ZejBsTWtZbWNEMGxOREJtYkhWcFpIZ2xNa1pzYjI5d0xYQmhaMlV0WTI5dWRHRnBibVZ5In0%3D
 
+  // in the end garret help us and told us that p5 canvas have a glitch.
   width = 800;
   height = 600;
 
   brickWidth =
     (width - spaceFromLeftWall * 2 - spaceBetweenBricks * (columns - 1)) /
-    columns;
+    columns; // https://www.youtube.com/watch?v=N3phCa6wJBQ
 
   // Grid of bricks
   for (let row = 0; row < rows; row++) {
@@ -113,6 +124,7 @@ function setup() {
 
 // Drawing the starfield
 function starfield() {
+  // used from Esmaeil first game
   push();
   let x1 = random(width);
   let y1 = random(height);
@@ -131,6 +143,7 @@ function mousePressed() {
   }
 }
 
+// Start screen of game
 function startScreen() {
   push();
   stroke(155, 255, 255); // Buttons and game name
@@ -150,10 +163,10 @@ function startScreen() {
   push();
 
   strokeWeight(5); // EASY Button shape
-  fill(255, 255, 255, 55);
+  fill(255, 255, 255);
   rect(x - 225, y + 150, 170, 50, 20);
 
-  noStroke(); // EASY Button text
+  stroke(155, 255, 255); // EASY Button text
   fill(0, 30, 65);
   textSize(30);
   text("EASY", x - 180, y + 185);
@@ -163,10 +176,10 @@ function startScreen() {
   push();
 
   strokeWeight(5); // Medium Button shape
-  fill(255, 255, 255, 55);
+  fill(255, 255, 255);
   rect(x - 225, y + 230, 170, 50, 20);
 
-  noStroke(); // Medium Button text
+  stroke(155, 255, 255); // Medium Button text
   fill(0, 30, 65);
   textSize(30);
   text("MEDIUM", x - 200, y + 265);
@@ -176,10 +189,10 @@ function startScreen() {
   push();
 
   strokeWeight(5); // Hard Button shape
-  fill(255, 255, 255, 55);
+  fill(255, 255, 255);
   rect(x - 225, y + 310, 170, 50, 20);
 
-  noStroke(); // Hard Button text
+  stroke(155, 255, 255); // Hard Button text
   fill(0, 30, 65);
   textSize(30);
   text("HARD", x - 180, y + 345);
@@ -190,57 +203,52 @@ function startScreen() {
 // Winning result screen
 function resultScreenWin() {
   push();
-  stroke(155, 255, 255); // Buttons and game name
+  stroke(155, 255, 255);
   strokeWeight(15);
   fill(255, 255, 255);
 
-  textSize(70); // Game name
+  textSize(70); // winning game msg and santa image
   text("HO HO GOOD JOB !", x - 270, y - 50);
   image(santa2Image, 300, 100);
 
-  strokeWeight(5);
-  fill(255, 255, 255, 55);
+  strokeWeight(5); // button for next level
+  fill(255, 255, 255);
   rect(x - 255, y + 200, 230, 50, 20);
 
-  // noStroke();
-  strokeWeight(5); // Buttons texts
+  strokeWeight(5); // text of next level
   fill(0, 30, 65);
   textSize(30);
   text("NEXT level", x - 215, y + 235);
   pop();
 
-  strokeWeight(5);
+  strokeWeight(5); // button for main menu
   stroke(155, 255, 255);
   textSize(40);
-  fill(255, 255, 255, 55);
+  fill(255, 255, 255);
   rect(x - 255, y + 280, 230, 50, 20);
-  strokeWeight(5); // Buttons texts
+  strokeWeight(5); // text for main menu
   fill(0, 30, 65);
   textSize(30);
   text("MAIN MENU", x - 225, y + 315);
 }
 
-// Winning result screen
+// Winning result screen of last level
 function resultScreen() {
   push();
-  stroke(155, 255, 255); // Buttons and game name
+  stroke(155, 255, 255); // winning game text
   strokeWeight(15);
   fill(255, 255, 255);
 
-  textSize(70); // Game name
+  textSize(70); //
   text("HO HO GOOD JOB !", x - 270, y - 50);
   image(santa2Image, 300, 100);
 
-  strokeWeight(5);
+  strokeWeight(5); // button for main menu
   textSize(40);
-  //text("FOR NEXT LEVEL", x - 300, y + 150);
-
-  //strokeWeight(5); // Button shape
-  fill(255, 255, 255, 55);
+  fill(255, 255, 255);
   rect(x - 55, y + 200, 230, 50, 20);
 
-  // noStroke();
-  strokeWeight(5); // Buttons texts
+  strokeWeight(5); // main menu text
   fill(0, 30, 65);
   textSize(30);
   text("MAIN MENU", x - 25, y + 235);
@@ -250,36 +258,40 @@ function resultScreen() {
 // Losing result screen
 function resultScreenLose() {
   push();
-  stroke(155, 255, 255); // Buttons and game name
+  stroke(155, 255, 255);
   strokeWeight(15);
   fill(255, 255, 255);
 
-  textSize(80); // Game name
+  textSize(80); // Game over text
   text("GAME OVER", x - 250, y - 10);
 
-  strokeWeight(5);
+  strokeWeight(5); // to play again text
   textSize(60);
   text("DO YOU WANT TO", x - 260, y + 150);
 
-  strokeWeight(5); // Button shape
+  // button for play again
   rect(x - 115, y + 200, 230, 50, 20);
 
-  // Buttons texts
+  // Buttons text
   fill(0, 30, 65);
   textSize(30);
-  text("PLAY AGAIN", x - 85, y + 235);
+  text("PLAY AGAIN", x - 85, y + 235); // play again text
   image(grinchImage, x + 100, y - 65);
   pop();
 
   strokeWeight(5); // Button shape
   stroke(155, 255, 255);
+  fill(255);
   rect(x - 115, y + 280, 230, 50, 20);
 
+  fill(0, 30, 65);
   textSize(30);
   text("MAIN MENU", x - 85, y + 315);
 }
 
+// gradient background
 function drawGradientBackground() {
+  // https://www.youtube.com/watch?v=EAY7S1tWbzc
   for (let y = 0; y < height; y++) {
     let inter = map(y, 0, height, 0, 1);
     let c = lerpColor(color("#001F3F"), color("#0077BE"), inter);
@@ -348,7 +360,7 @@ function draw() {
         allBricksDestroyed = false; // when bricks are drawn "allBricksDestroyed" variable will becaome false.
 
         if (
-          ball.x >= brick.x &&
+          ball.x >= brick.x && // brick collision
           ball.x <= brick.x + brick.width &&
           ball.y >= brick.y &&
           ball.y <= brick.y + brick.height
@@ -367,6 +379,7 @@ function draw() {
     // Winning condition
 
     if (allBricksDestroyed) {
+      // when all the bricks will disapper, "allBricksDestroyed" will be true and gamestate will benchanged to won.
       gameState = "won";
     }
   } else if (gameState === "lost") {
@@ -393,11 +406,11 @@ function resetGame() {
   bricks = [];
   for (let row = 0; row < rows; row++) {
     for (let column = 0; column < columns; column++) {
-      // Calculate the x and y position for the current brick
+      // Calculate the x and y position for the bricks
       let x = spaceFromLeftWall + column * (brickWidth + spaceBetweenBricks);
       let y = spaceFromTopWall + row * (brickHeight + spaceBetweenBricks);
 
-      // Create a new Brick object at the calculated position
+      // Create a new Brick wall
       bricks.push(new Brick(x, y));
     }
   }
@@ -406,8 +419,11 @@ function resetGame() {
 // Mouse click to start the game
 function mousePressed() {
   if (gameState === "playing" && !ballReleased) {
+    // ball will not release when gamestate will be playing until we click the mouse button
     ballReleased = true;
   }
+
+  // start screen have three buttons. easy, medium and hard
   if (gameState === "start") {
     // Easy button
     if (mouseX > 120 && mouseX < 300 && mouseY > 345 && mouseY < 400) {
@@ -428,6 +444,8 @@ function mousePressed() {
       paddle.width = 60;
       paddle.speed = 12;
     }
+
+    // if you lost easy level and click on play again you can play easy mode again
   } else if (gameState === "lost" && paddle.width === 120) {
     if (mouseX > 235 && mouseX < 465 && mouseY > 400 && mouseY < 450) {
       gameState = "playing";
@@ -437,20 +455,23 @@ function mousePressed() {
       bricks = [];
       for (let row = 0; row < rows; row++) {
         for (let column = 0; column < columns; column++) {
-          // Calculate the x and y position for the current brick
+          // Calculate the x and y position for the bricks
           let x =
             spaceFromLeftWall + column * (brickWidth + spaceBetweenBricks);
           let y = spaceFromTopWall + row * (brickHeight + spaceBetweenBricks);
 
-          // Create a new Brick object at the calculated position
+          // Create a new Brick wall
           bricks.push(new Brick(x, y));
         }
       }
     } else if (mouseX > 235 && mouseX < 465 && mouseY > 480 && mouseY < 530) {
+      // button for the main menu
       gameState = "start";
       ballReleased = false;
       resetGame();
     }
+
+    // if you won easy level. by clicking button next level you will go to medium level
   } else if (gameState === "won" && paddle.width === 120) {
     if (mouseX > 95 && mouseX < 325 && mouseY > 400 && mouseY < 450) {
       gameState = "playing";
@@ -473,6 +494,7 @@ function mousePressed() {
         }
       }
     } else if (mouseX > 95 && mouseX < 325 && mouseY > 480 && mouseY < 530) {
+      // button for the main menu
       gameState = "start";
       ballReleased = false;
       resetGame();
@@ -491,16 +513,17 @@ function mousePressed() {
       bricks = [];
       for (let row = 0; row < rows; row++) {
         for (let column = 0; column < columns; column++) {
-          // Calculate the x and y position for the current brick
+          // Calculate the x and y position for the bricks
           let x =
             spaceFromLeftWall + column * (brickWidth + spaceBetweenBricks);
           let y = spaceFromTopWall + row * (brickHeight + spaceBetweenBricks);
 
-          // Create a new Brick object at the calculated position
+          // Create a new Brick wall
           bricks.push(new Brick(x, y));
         }
       }
     } else if (mouseX > 235 && mouseX < 465 && mouseY > 480 && mouseY < 530) {
+      // button for the main menu
       gameState = "start";
       ballReleased = false;
       resetGame();
@@ -518,16 +541,17 @@ function mousePressed() {
       bricks = [];
       for (let row = 0; row < rows; row++) {
         for (let column = 0; column < columns; column++) {
-          // Calculate the x and y position for the current brick
+          // Calculate the x and y position for the bricks
           let x =
             spaceFromLeftWall + column * (brickWidth + spaceBetweenBricks);
           let y = spaceFromTopWall + row * (brickHeight + spaceBetweenBricks);
 
-          // Create a new Brick object at the calculated position
+          // Create a new Brick wall
           bricks.push(new Brick(x, y));
         }
       }
     } else if (mouseX > 95 && mouseX < 325 && mouseY > 480 && mouseY < 530) {
+      // button for the main menu
       gameState = "start";
       ballReleased = false;
       resetGame();
@@ -546,16 +570,17 @@ function mousePressed() {
       bricks = [];
       for (let row = 0; row < rows; row++) {
         for (let column = 0; column < columns; column++) {
-          // Calculate the x and y position for the current brick
+          // Calculate the x and y position for the bricks
           let x =
             spaceFromLeftWall + column * (brickWidth + spaceBetweenBricks);
           let y = spaceFromTopWall + row * (brickHeight + spaceBetweenBricks);
 
-          // Create a new Brick object at the calculated position
+          // Create a new Brick wall
           bricks.push(new Brick(x, y));
         }
       }
     } else if (mouseX > 235 && mouseX < 465 && mouseY > 480 && mouseY < 530) {
+      // button for the main menu
       gameState = "start";
       ballReleased = false;
       resetGame();
@@ -563,6 +588,7 @@ function mousePressed() {
     // if you won hard mode and click main menu you will go to main menu
   } else if (gameState === "won" && paddle.width === 60) {
     if (mouseX > 95 && mouseX < 325 && mouseY > 400 && mouseY < 450) {
+      // button for the main menu
       gameState = "start";
       ballReleased = false;
       resetGame();
