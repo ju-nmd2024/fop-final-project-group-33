@@ -9,10 +9,13 @@
 
 let x = 350;
 let y = 200;
+let score = 0;
+let lives = 3;
 
 // Array for bricks
 let bricks = [];
 
+//game states
 let gameState = "start"; // start, won, playing, lost
 
 // Number of rows and columns for the bricks
@@ -23,7 +26,7 @@ let columns = 6;
 let brickWidth;
 let brickHeight = 50;
 let spaceBetweenBricks = 10;
-let spaceFromTopWall = 10;
+let spaceFromTopWall = 50;
 let spaceFromLeftWall = 10;
 
 // Variables for paddle and ball
@@ -300,9 +303,28 @@ function drawGradientBackground() {
   }
 }
 
+// https://chatgpt.com/share/6751cfb1-a910-8008-b197-bb2db33caada
+function displayScore() {
+  strokeWeight(2);
+  stroke(155, 255, 255);
+  fill(255);
+  textSize(30);
+  text("Score: " + score, 10, 30);
+}
+
+function displayLives() {
+  strokeWeight(2);
+  stroke(155, 255, 255);
+  fill(255);
+  textSize(30);
+  text("Lives: " + lives, width - 120, 30);
+}
+
 function draw() {
   drawGradientBackground();
   starfield();
+  displayScore();
+  displayLives();
 
   if (gameState === "start") {
     startScreen();
@@ -339,10 +361,10 @@ function draw() {
 
       // When ball hits paddle
       if (
-        ball.y + ball.size / 2 >= paddle.y &&
-        ball.x >= paddle.x &&
-        ball.x <= paddle.x + paddle.width //&&
-        // ball.y <= (paddle.x + paddle.width) + paddle.height
+        ball.x >= paddle.x && // paddle collision
+        ball.x <= paddle.x + paddle.width &&
+        ball.y >= paddle.y &&
+        ball.y <= paddle.y + paddle.height
       ) {
         ball.dy = ball.dy * -1;
       }
@@ -367,13 +389,21 @@ function draw() {
         ) {
           ball.dy *= -1;
           brick.visible = false;
+          score += 10;
         }
       }
     }
 
     // Losing condition
     if (ball.y >= height) {
-      gameState = "lost";
+      lives = lives - 1;
+      if (lives > 0) {
+        // if lives is greater than 0 , location of ball and paddle will be reset
+        ballReleased = false;
+        ball.x = paddle.x + paddle.width / 2;
+        ball.y = paddle.y - ball.size / 2;
+        paddle.x = width / 2 - paddleWidth / 2;
+      } else gameState = "lost";
     }
 
     // Winning condition
@@ -401,6 +431,12 @@ function resetGame() {
   //Reset paddle position
   paddle.x = width / 2 - paddleWidth / 2;
   paddle.width = 120;
+
+  //Reset score
+  score = 0;
+
+  // Reset lives
+  lives = 3;
 
   //Reset bricks
   bricks = [];
