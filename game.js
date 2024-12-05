@@ -4,7 +4,7 @@ let y = 200;
 // Array for bricks
 let bricks = [];
 
-let gameState = "start"; // start, easyWon1, lost, le
+let gameState = "lost"; // start, easyWon, easylost, mediumWon, mediumLost, hardWon, hardLost
 let brickImage;
 
 // Number of rows and columns for the bricks
@@ -199,19 +199,25 @@ function resultScreenWin() {
   image(santa2Image, 300, 100);
 
   strokeWeight(5);
-  textSize(40);
-  //text("FOR NEXT LEVEL", x - 300, y + 150);
-
-  //strokeWeight(5); // Button shape
   fill(255, 255, 255, 55);
-  rect(x - 55, y + 200, 230, 50, 20);
+  rect(x - 255, y + 200, 230, 50, 20);
 
   // noStroke();
   strokeWeight(5); // Buttons texts
   fill(0, 30, 65);
   textSize(30);
-  text("MAIN MENU", x - 25, y + 235);
+  text("NEXT level", x - 215, y + 235);
   pop();
+
+  strokeWeight(5);
+  stroke(155, 255, 255);
+  textSize(40);
+  fill(255, 255, 255, 55);
+  rect(x - 255, y + 280, 230, 50, 20);
+  strokeWeight(5); // Buttons texts
+  fill(0, 30, 65);
+  textSize(30);
+  text("MAIN MENU", x - 225, y + 315);
 }
 
 // Winning result screen
@@ -258,12 +264,19 @@ function resultScreenLose() {
   strokeWeight(5); // Button shape
   rect(x - 115, y + 200, 230, 50, 20);
 
-  noStroke(); // Buttons texts
+  // Buttons texts
   fill(0, 30, 65);
   textSize(30);
   text("PLAY AGAIN", x - 85, y + 235);
-  image(grinchImage, x + 100, y);
+  image(grinchImage, x + 100, y - 65);
   pop();
+
+  strokeWeight(5); // Button shape
+  stroke(155, 255, 255);
+  rect(x - 115, y + 280, 230, 50, 20);
+
+  textSize(30);
+  text("MAIN MENU", x - 85, y + 315);
 }
 
 function drawGradientBackground() {
@@ -316,7 +329,8 @@ function draw() {
       if (
         ball.y + ball.size / 2 >= paddle.y &&
         ball.x >= paddle.x &&
-        ball.x <= paddle.x + paddle.width
+        ball.x <= paddle.x + paddle.width //&&
+        // ball.y <= (paddle.x + paddle.width) + paddle.height
       ) {
         ball.dy = ball.dy * -1;
       }
@@ -402,20 +416,153 @@ function mousePressed() {
     // Medium button
     else if (mouseX > 120 && mouseX < 300 && mouseY > 425 && mouseY < 485) {
       gameState = "playing";
-      ball.dx = 8;
-      ball.dy = -8;
+      ball.dx = 7;
+      ball.dy = -7;
       paddle.width = 90;
     }
     // Hard button
     else if (mouseX > 120 && mouseX < 300 && mouseY > 505 && mouseY < 565) {
       gameState = "playing";
+      ball.dx = 9;
+      ball.dy = -9;
+      paddle.width = 60;
+      paddle.speed = 12;
+    }
+  } else if (gameState === "lost" && paddle.width === 120) {
+    if (mouseX > 235 && mouseX < 465 && mouseY > 400 && mouseY < 450) {
+      gameState = "playing";
+      ballReleased = false;
+      resetGame();
+
+      bricks = [];
+      for (let row = 0; row < rows; row++) {
+        for (let column = 0; column < columns; column++) {
+          // Calculate the x and y position for the current brick
+          let x =
+            spaceFromLeftWall + column * (brickWidth + spaceBetweenBricks);
+          let y = spaceFromTopWall + row * (brickHeight + spaceBetweenBricks);
+
+          // Create a new Brick object at the calculated position
+          bricks.push(new Brick(x, y));
+        }
+      }
+    } else if (mouseX > 235 && mouseX < 465 && mouseY > 480 && mouseY < 530) {
+      gameState = "start";
+      ballReleased = false;
+      resetGame();
+    }
+  } else if (gameState === "won" && paddle.width === 120) {
+    if (mouseX > 95 && mouseX < 325 && mouseY > 400 && mouseY < 450) {
+      gameState = "playing";
+      ballReleased = false;
+      ball.dx = 8;
+      ball.dy = -8;
+      paddle.width = 90;
+      paddle.x = width / 2 - paddleWidth / 2;
+
+      bricks = [];
+      for (let row = 0; row < rows; row++) {
+        for (let column = 0; column < columns; column++) {
+          // Calculate the x and y position for the current brick
+          let x =
+            spaceFromLeftWall + column * (brickWidth + spaceBetweenBricks);
+          let y = spaceFromTopWall + row * (brickHeight + spaceBetweenBricks);
+
+          // Create a new Brick object at the calculated position
+          bricks.push(new Brick(x, y));
+        }
+      }
+    } else if (mouseX > 95 && mouseX < 325 && mouseY > 480 && mouseY < 530) {
+      gameState = "start";
+      ballReleased = false;
+      resetGame();
+    }
+
+    // if you lost medium mode and click plick gain you can play agin medium level
+  } else if (gameState === "lost" && paddle.width === 90) {
+    if (mouseX > 235 && mouseX < 465 && mouseY > 400 && mouseY < 450) {
+      gameState = "playing";
+      ballReleased = false;
+      ball.dx = 8;
+      ball.dy = -8;
+      paddle.width = 90;
+      paddle.x = width / 2 - paddleWidth / 2;
+
+      bricks = [];
+      for (let row = 0; row < rows; row++) {
+        for (let column = 0; column < columns; column++) {
+          // Calculate the x and y position for the current brick
+          let x =
+            spaceFromLeftWall + column * (brickWidth + spaceBetweenBricks);
+          let y = spaceFromTopWall + row * (brickHeight + spaceBetweenBricks);
+
+          // Create a new Brick object at the calculated position
+          bricks.push(new Brick(x, y));
+        }
+      }
+    } else if (mouseX > 235 && mouseX < 465 && mouseY > 480 && mouseY < 530) {
+      gameState = "start";
+      ballReleased = false;
+      resetGame();
+    }
+    // if you won medium mode and click next level you will go to hard level
+  } else if (gameState === "won" && paddle.width === 90) {
+    if (mouseX > 95 && mouseX < 325 && mouseY > 400 && mouseY < 450) {
+      gameState = "playing";
+      ballReleased = false;
       ball.dx = 11;
       ball.dy = -11;
       paddle.width = 60;
+      paddle.x = width / 2 - paddleWidth / 2;
+
+      bricks = [];
+      for (let row = 0; row < rows; row++) {
+        for (let column = 0; column < columns; column++) {
+          // Calculate the x and y position for the current brick
+          let x =
+            spaceFromLeftWall + column * (brickWidth + spaceBetweenBricks);
+          let y = spaceFromTopWall + row * (brickHeight + spaceBetweenBricks);
+
+          // Create a new Brick object at the calculated position
+          bricks.push(new Brick(x, y));
+        }
+      }
+    } else if (mouseX > 95 && mouseX < 325 && mouseY > 480 && mouseY < 530) {
+      gameState = "start";
+      ballReleased = false;
+      resetGame();
     }
-  } else if (gameState === "lost" || gameState === "won") {
-    // Restart button
+
+    // if you lost hard mode and click play again you can play  again hard level
+  } else if (gameState === "lost" && paddle.width === 60) {
     if (mouseX > 235 && mouseX < 465 && mouseY > 400 && mouseY < 450) {
+      gameState = "playing";
+      ballReleased = false;
+      ball.dx = 11;
+      ball.dy = -11;
+      paddle.width = 60;
+      paddle.x = width / 2 - paddleWidth / 2;
+
+      bricks = [];
+      for (let row = 0; row < rows; row++) {
+        for (let column = 0; column < columns; column++) {
+          // Calculate the x and y position for the current brick
+          let x =
+            spaceFromLeftWall + column * (brickWidth + spaceBetweenBricks);
+          let y = spaceFromTopWall + row * (brickHeight + spaceBetweenBricks);
+
+          // Create a new Brick object at the calculated position
+          bricks.push(new Brick(x, y));
+        }
+      }
+    } else if (mouseX > 235 && mouseX < 465 && mouseY > 480 && mouseY < 530) {
+      gameState = "start";
+      ballReleased = false;
+      resetGame();
+    }
+    // if you won hard mode and click main menu you will go to main menu
+  } else if (gameState === "won" && paddle.width === 60) {
+    if (mouseX > 95 && mouseX < 325 && mouseY > 400 && mouseY < 450) {
       gameState = "start";
       ballReleased = false;
       resetGame();
