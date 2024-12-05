@@ -4,7 +4,7 @@ let y = 200;
 // Array for bricks
 let bricks = [];
 
-let gameState = "start";
+let gameState = "start"; // start, easyWon1, lost, le
 let brickImage;
 
 // Number of rows and columns for the bricks
@@ -13,7 +13,7 @@ let columns = 6;
 
 // Variables for brick dimensions and spacing
 let brickWidth;
-let brickHeight = 30;
+let brickHeight = 50;
 let spaceBetweenBricks = 10;
 let spaceFromTopWall = 10;
 let spaceFromLeftWall = 10;
@@ -21,7 +21,7 @@ let spaceFromLeftWall = 10;
 // Variables for paddle and ball
 let paddle;
 let paddleWidth = 120;
-let paddleHeight = 20;
+let paddleHeight = 30;
 let ball;
 let ballSize = 15;
 let ballReleased = false;
@@ -66,7 +66,7 @@ class Paddle {
   }
 
   draw() {
-    image(paddleImage, this.x, this.y, this.width, this.height, this.height / 2);
+    image(paddleImage, this.x, this.y, this.width, this.height);
   }
 }
 
@@ -98,7 +98,7 @@ function setup() {
     height - 70,
     paddleWidth,
     paddleHeight,
-    8
+    10
   );
 
   // Create ball
@@ -137,30 +137,26 @@ function startScreen() {
   strokeWeight(25);
   fill(255, 255, 255);
 
-  textSize(100); // Game name
-  text("BREAKOUT", x - 230, y - 10);
+  textSize(120); // Game name
+  text("BREAKOUT", x - 280, y - 10);
   image(santaImage, 300, 100);
 
-  // strokeWeight(5); // Level Button shape
-  // rect(x - 40, y + 100, 160, 50, 20);
-
-  // noStroke(); // Level text
-  // fill(0, 30, 65);
-  textSize(20);
-  text("CHOOSE A LEVEL", x - 200, y + 135);
+  strokeWeight(5);
+  textSize(40);
+  text("CHOOSE A LEVEL", x - 280, y + 115);
 
   pop();
 
   push();
 
-  strokeWeight(2); // EASY Button shape
+  strokeWeight(5); // EASY Button shape
   fill(255, 255, 255, 55);
-  rect(x - 275, y + 200, 170, 50, 20);
+  rect(x - 225, y + 150, 170, 50, 20);
 
   noStroke(); // EASY Button text
   fill(0, 30, 65);
   textSize(30);
-  text("EASY", x - 230, y + 235);
+  text("EASY", x - 180, y + 185);
 
   pop();
 
@@ -168,12 +164,12 @@ function startScreen() {
 
   strokeWeight(5); // Medium Button shape
   fill(255, 255, 255, 55);
-  rect(x - 85, y + 200, 170, 50, 20);
+  rect(x - 225, y + 230, 170, 50, 20);
 
   noStroke(); // Medium Button text
   fill(0, 30, 65);
   textSize(30);
-  text("MEDIUM", x - 60, y + 235);
+  text("MEDIUM", x - 200, y + 265);
 
   pop();
 
@@ -181,12 +177,12 @@ function startScreen() {
 
   strokeWeight(5); // Hard Button shape
   fill(255, 255, 255, 55);
-  rect(x + 105, y + 200, 170, 50, 20);
+  rect(x - 225, y + 310, 170, 50, 20);
 
   noStroke(); // Hard Button text
   fill(0, 30, 65);
   textSize(30);
-  text("HARD", x + 150, y + 235);
+  text("HARD", x - 180, y + 345);
 
   pop();
 }
@@ -198,20 +194,50 @@ function resultScreenWin() {
   strokeWeight(15);
   fill(255, 255, 255);
 
-  textSize(90); // Game name
-  text("GOOD JOB !", x - 250, y - 10);
+  textSize(70); // Game name
+  text("HO HO GOOD JOB !", x - 270, y - 50);
+  image(santa2Image, 300, 100);
 
   strokeWeight(5);
-  textSize(60);
-  text("FOR NEXT LEVEL", x - 240, y + 150);
+  textSize(40);
+  //text("FOR NEXT LEVEL", x - 300, y + 150);
 
-  strokeWeight(5); // Button shape
-  rect(x - 115, y + 200, 230, 50, 20);
+  //strokeWeight(5); // Button shape
+  fill(255, 255, 255, 55);
+  rect(x - 55, y + 200, 230, 50, 20);
 
-  noStroke(); // Buttons texts
+  // noStroke();
+  strokeWeight(5); // Buttons texts
   fill(0, 30, 65);
   textSize(30);
-  text("CLICK HERE", x - 85, y + 235);
+  text("MAIN MENU", x - 25, y + 235);
+  pop();
+}
+
+// Winning result screen
+function resultScreen() {
+  push();
+  stroke(155, 255, 255); // Buttons and game name
+  strokeWeight(15);
+  fill(255, 255, 255);
+
+  textSize(70); // Game name
+  text("HO HO GOOD JOB !", x - 270, y - 50);
+  image(santa2Image, 300, 100);
+
+  strokeWeight(5);
+  textSize(40);
+  //text("FOR NEXT LEVEL", x - 300, y + 150);
+
+  //strokeWeight(5); // Button shape
+  fill(255, 255, 255, 55);
+  rect(x - 55, y + 200, 230, 50, 20);
+
+  // noStroke();
+  strokeWeight(5); // Buttons texts
+  fill(0, 30, 65);
+  textSize(30);
+  text("MAIN MENU", x - 25, y + 235);
   pop();
 }
 
@@ -221,7 +247,6 @@ function resultScreenLose() {
   stroke(155, 255, 255); // Buttons and game name
   strokeWeight(15);
   fill(255, 255, 255);
-
 
   textSize(80); // Game name
   text("GAME OVER", x - 250, y - 10);
@@ -297,18 +322,16 @@ function draw() {
       }
     }
 
-    // Losing condition
-    if (ball.y >= height) {
-      gameState = "lost";
-    }
-
     // Draw ball
     fill(105, 250, 250);
     ellipse(ball.x, ball.y, ball.size);
 
+    // Draw bricks
+    let allBricksDestroyed = true;
     for (let brick of bricks) {
       if (brick.visible) {
         brick.draw();
+        allBricksDestroyed = false; // when bricks are drawn "allBricksDestroyed" variable will becaome false.
 
         if (
           ball.x >= brick.x &&
@@ -320,6 +343,17 @@ function draw() {
           brick.visible = false;
         }
       }
+    }
+
+    // Losing condition
+    if (ball.y >= height) {
+      gameState = "lost";
+    }
+
+    // Winning condition
+
+    if (allBricksDestroyed) {
+      gameState = "won";
     }
   } else if (gameState === "lost") {
     resultScreenLose();
@@ -362,18 +396,18 @@ function mousePressed() {
   }
   if (gameState === "start") {
     // Easy button
-    if (mouseX > 75 && mouseX < 245 && mouseY > 400 && mouseY < 450) {
+    if (mouseX > 120 && mouseX < 300 && mouseY > 345 && mouseY < 400) {
       gameState = "playing";
     }
     // Medium button
-    else if (mouseX > 265 && mouseX < 435 && mouseY > 400 && mouseY < 450) {
+    else if (mouseX > 120 && mouseX < 300 && mouseY > 425 && mouseY < 485) {
       gameState = "playing";
       ball.dx = 8;
       ball.dy = -8;
       paddle.width = 90;
     }
     // Hard button
-    else if (mouseX > 455 && mouseX < 625 && mouseY > 400 && mouseY < 450) {
+    else if (mouseX > 120 && mouseX < 300 && mouseY > 505 && mouseY < 565) {
       gameState = "playing";
       ball.dx = 11;
       ball.dy = -11;
